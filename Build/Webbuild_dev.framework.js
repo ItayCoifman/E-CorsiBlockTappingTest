@@ -1292,7 +1292,7 @@ function _emscripten_asm_const_id(code, a0) {
  return ASM_CONSTS[code](a0);
 }
 STATIC_BASE = GLOBAL_BASE;
-STATICTOP = STATIC_BASE + 2835536;
+STATICTOP = STATIC_BASE + 2837024;
 __ATINIT__.push({
  func: (function() {
   __GLOBAL__sub_I_AccessibilityScriptingClasses_cpp();
@@ -3346,12 +3346,34 @@ __ATINIT__.push({
   ___emscripten_environ_constructor();
  })
 });
-var STATIC_BUMP = 2835536;
+var STATIC_BUMP = 2837024;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 var tempDoublePtr = STATICTOP;
 STATICTOP += 16;
 assert(tempDoublePtr % 8 == 0);
+function _DownloadFile(gameObjectNamePtr, methodNamePtr, filenamePtr, byteArray, byteArraySize) {
+ gameObjectName = Pointer_stringify(gameObjectNamePtr);
+ methodName = Pointer_stringify(methodNamePtr);
+ filename = Pointer_stringify(filenamePtr);
+ var bytes = new Uint8Array(byteArraySize);
+ for (var i = 0; i < byteArraySize; i++) {
+  bytes[i] = HEAPU8[byteArray + i];
+ }
+ var downloader = window.document.createElement("a");
+ downloader.setAttribute("id", gameObjectName);
+ downloader.href = window.URL.createObjectURL(new Blob([ bytes ], {
+  type: "application/octet-stream"
+ }));
+ downloader.download = filename;
+ document.body.appendChild(downloader);
+ document.onmouseup = (function() {
+  downloader.click();
+  document.body.removeChild(downloader);
+  document.onmouseup = null;
+  SendMessage(gameObjectName, methodName);
+ });
+}
 function _JS_Cursor_SetImage(ptr, length) {
  var binary = "";
  for (var i = 0; i < length; i++) binary += String.fromCharCode(HEAPU8[ptr + i]);
@@ -18326,6 +18348,7 @@ Module.asmLibraryArg = {
  "invoke_vjiiiiiii": invoke_vjiiiiiii,
  "invoke_vjiiiiiiii": invoke_vjiiiiiiii,
  "invoke_vjji": invoke_vjji,
+ "_DownloadFile": _DownloadFile,
  "_JS_Cursor_SetImage": _JS_Cursor_SetImage,
  "_JS_Cursor_SetShow": _JS_Cursor_SetShow,
  "_JS_Eval_ClearInterval": _JS_Eval_ClearInterval,
